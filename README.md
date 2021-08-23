@@ -4,7 +4,7 @@ Class project using Ansible
 
 The files in this repository were used to configure the network depicted below.
 
-Diagrams/Diagram.png
+![Diagram](https://user-images.githubusercontent.com/83714303/130390164-2e5e9eb5-cbe1-4532-9a8f-e0fe632699ab.JPG)
 
 These files have been tested and used to generate a live ELK deployment on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the _YAML___ file may be used to install only certain pieces of it, such as Filebeat.
 ---
