@@ -91,7 +91,7 @@ In order to use the playbook, you will need to have an Ansible control node alre
 SSH into the control node and follow the steps below:
 - Copy the _roles____ file to _/etc/ansible/files____.
 - Update the _hosts____ file to include webservers IPS and ELKserver IPS
-- Run the playbook, and navigate to _HTTP://<ElkVMIP>:5601.setup.php__ to check that the installation worked as expected.
+- Run the playbook, and navigate to _http://52.250.8.149:5601.__ to check that the installation worked as expected.
 
 
 - Copy the elk.playbook.yml file to /etc/ansible 
@@ -100,5 +100,3 @@ SSH into the control node and follow the steps below:
     -Kibanna - uncomment and replace localhost with local IP for ELK server
     -Elasticsearch - uncomment and replace local host with local IP for ELK Server
 
-
-_As a **Bonus**, provide the specific commands the user will need to run to download the playbook, update the files, etc._
