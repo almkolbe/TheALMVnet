@@ -6,7 +6,37 @@ The files in this repository were used to configure the network depicted below.
 
 ![TODO: Update the path with the name of your diagram](Images/diagram_filename.png)
 
-These files have been tested and used to generate a live ELK deployment on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the _filebeat-playbook.yml___ file may be used to install only certain pieces of it, such as Filebeat.
+These files have been tested and used to generate a live ELK deployment on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the _YAML___ file may be used to install only certain pieces of it, such as Filebeat.
+---
+  - name: installing and launching filebeat
+    hosts: webservers
+    become: yes
+    tasks:
+
+    - name: download filebeat deb
+      command: curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.1-amd64.deb
+
+    - name: install filebeat deb
+      command: dpkg -i filebeat-7.6.1-amd64.deb
+
+    - name: drop in filebeat.yml
+      copy:
+        src: /etc/ansible/files/filebeat-config.yml
+        dest: /etc/filebeat/filebeat.yml
+
+    - name: Enable and Configure System Module
+      command: filebeat modules enable system
+
+    - name: setup filebeat
+      command: filebeat setup
+
+    - name: start filebeat service
+      command: service filebeat start
+
+    - name: enable service filebeat on boot
+      systemd:
+        name: filebeat
+        enabled: yes
 
 
 This document contains the following details:
@@ -22,23 +52,21 @@ This document contains the following details:
 
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the D*mn Vulnerable Web Application.
 
-Load balancing ensures that the application will be highly _efficient____, in addition to restricting _response times___ to the network.
+Load balancing ensures that the application will be highly _avaliable____, in addition to restricting _access___ to the network.
 - Load balancers plays an important role in security because of its off-loading function of a load balancer defends an organization against DDos attacks.
 - A jumpbox is a secure computer that all admins first connect to before launching any administrative task.
 
 Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the _logs____ and system _metrics____.
-- _TODO: What does Filebeat watch for?_
-- _TODO: What does Metricbeat record?_
+- The filebeats monitors the logs files and collects log events and fowards them to Kibanna/Elasticsearch. 
+- The metricbeats watch the systems performances.
 
-The configuration details of each machine may be found below.
-_Note: Use the [Markdown Table Generator](http://www.tablesgenerator.com/markdown_tables) to add/remove values from the table_.
 
 | Name     | Function | IP Address | Operating System |
 |----------|----------|------------|------------------|
 |JumpBoxPro| Gateway  | 10.0.0.4   | Linux (Unbuntu)  |
 | Web-1    |Webserver | 10.0.0.5   | Linux (Unbuntu)  |
 | Web-2    |Webserver | 10.0.0.7   | Linux (Unbuntu)  |
-
+| ELK VM   |ELKserver | 10.1.0.4   | Linux            |
 
 ### Access Policies
 
@@ -48,16 +76,16 @@ Only the _Jumpbox____ machine can accept connections from the Internet. Access t
 - HomeNetwork IP Address
 
 Machines within the network can only be accessed by _home network IP____.
-- JumpBox Provisoner IP(10.0.0.4)
+- JumpBox Provisoner IP(10.0.0.4) ELk VM (10.1.0.4)
 
 A summary of the access policies in place can be found in the table below.
 
 | Name     | Publicly Accessible | Allowed IP Addresses   |
 |----------|---------------------|----------------------  |
-| Jump Box |     No              |   Home Network IP      |
+| Jump Box |     Yes             |   Home Network IP      |
 |DVWA Web-1|     No              |10.0.0.4 HomeNetworkIP  |
 |DVWA Web-2|     NO              | 10.0.0.4 HomeNetworkIP |
-|ELK VM    |     NO              | 10.0.0.4 Home NetworkIP|
+|ELK VM    |     Yes             | 10.0.0.4 Home NetworkIP|
 ### Elk Configuration
 
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because it reduce the potential for error and increase productivity. It allows It admins to automate thier daily task which frees them to focus on efforts that help deliver more value to the business
@@ -92,11 +120,11 @@ In order to use the playbook, you will need to have an Ansible control node alre
 
 SSH into the control node and follow the steps below:
 - Copy the _roles____ file to _/etc/ansible/files____.
-- Update the _config____ file to include webservers IPS and ELKserver IPS
-- Run the playbook, and navigate to _HTTP://<ElkVMIP>:5601__ to check that the installation worked as expected.
+- Update the _hosts____ file to include webservers IPS and ELKserver IPS
+- Run the playbook, and navigate to _HTTP://<ElkVMIP>:5601.setup.php__ to check that the installation worked as expected.
 
-_TODO: Answer the following questions to fill in the blanks:_
-- Copy the host file to /etc/ansible 
+
+- Copy the elk.playbook.yml file to /etc/ansible 
 - Update the hosts file too include webservers IP and ELK VM IP
 - Update each config file with ELKserver IP.
     -Kibanna - uncomment and replace localhost with local IP for ELK server
